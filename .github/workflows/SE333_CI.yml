@@ -5,38 +5,18 @@ on:
       - main
 
 jobs:
-  SE333_CI_JOB:
+  test:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - name: checkout-repo
-        uses: actions/checkout@v4
-
-      - name: setupJava
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
-          java-version: '21'
           distribution: 'temurin'
-          architecture: x64
-
-      - name: Install Linter
-        run: mvn -B -V -e -DskipTests=true clean validate checkstyle:checkstyle
-
-      - name: Run Checkstyle
-        run: mvn checkstyle:checkstyle
-
-      - name: Upload Checkstyle Result
-        uses: actions/upload-artifact@v4
-        with:
-            name: checkstyle-result
-            path: target/checkstyle-result.xml
-            if-no-files-found: warn
-
-      - name: Run Maven Test
-        run: mvn -B -e test
-
-      - name: Jacoco Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: target/site/jacoco/jacoco.xml
-          if-no-files-found: warn
+          java-version: '21'
+      - name: Build & Install
+        run: mvn -B install -D skipTests --no-transfer-progress
+      - name: Ensure browsers are installed
+        run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps"
+      - name: Run tests
+        run: mvn test
