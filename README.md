@@ -1,4 +1,4 @@
-# Assignment 7 - UI Testing
+# Assignment 6 - UI Testing
 
 For this assignment, I manually wrote a full Playwright test in Java to automate a purchase pathway on the DePaul University Bookstore website. This included setting up the Playwright dependencies in Maven, creating the test structure, writing detailed assertions, and using locators to interact with every element on the page.
 
